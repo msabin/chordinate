@@ -1,0 +1,13 @@
+#key {
+	height: 5rem;
+  width: 1rem;
+	background-color: white;
+	border-color: black;
+	border-width: 1px;
+	border-style: solid;
+  border-radius: 3px;
+}
+
+#key:active {
+  background-color: aquamarine;
+}
