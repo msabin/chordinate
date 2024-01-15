@@ -5,8 +5,11 @@ export function KeyBoard(){
 
   return (
     <div id={styles.keyboard}>
-      <Key></Key>
-      <Key></Key>
+      {[...Array(88).keys()].map(i => 
+        <Key 
+          midiNote={i+21}
+          key={i+21}
+        ></Key>)}
     </div>
   )
 }
