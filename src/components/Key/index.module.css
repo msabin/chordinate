@@ -1,7 +1,7 @@
 .key {
 	/* height: 5rem; */
   /* width: 1rem; */
-  flex: 3 0 auto;
+  flex: 1 0 auto;
   aspect-ratio: 1/6;
 	background-color: white;
 	border-color: black;
@@ -12,7 +12,7 @@
 
 .key.black {
   background-color: black;
-  flex: 1 0 auto;
+  flex: .4 0 auto;
 }
 
 .key[aria-pressed="true"] {
