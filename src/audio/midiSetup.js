@@ -51,15 +51,15 @@ function onMIDIMessage(event) {
   console.log(str);
   console.log('MIDI note:', event.data[1]);
 
-  const key = document.querySelector(`[data-midi="${event.data[1]}"]`);
+  const key = document.getElementById(event.data[1]);
 
   if (event.data[0] === MIDI_PRESS) {
     
-    key.style.backgroundColor = 'blue';
+    key.ariaPressed = 'true';
 
     // Change the styling of the key corresponding to MIDI the note event.data[1]
   }
   else if (event.data[0] === MIDI_RELEASE) {
-    key.style.backgroundColor = 'white';
+    key.ariaPressed = 'false';
   }
 }

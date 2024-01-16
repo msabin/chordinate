@@ -7,9 +7,8 @@ export function Key(props) {
 
   return (
     <div 
-      id={styles.key}
-      className = {isBlack ? styles.black : null}
-      data-midi={midiNote}
+      id={midiNote}
+      className = {`${styles.key} ${isBlack ? styles.black : null}`}
       ></div>
   )
 }

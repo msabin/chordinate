@@ -1,4 +1,4 @@
-#key {
+.key {
 	/* height: 5rem; */
   /* width: 1rem; */
   flex: 3 0 auto;
@@ -10,11 +10,11 @@
   border-radius: 3px;
 }
 
-#key.black {
+.key.black {
   background-color: black;
   flex: 1 0 auto;
 }
 
-#key:active {
-  background-color: aquamarine;
+.key[aria-pressed="true"] {
+  background-color: aqua;
 }
