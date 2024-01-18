@@ -1,7 +1,7 @@
 .key {
 	/* height: 5rem; */
-  /* width: 1rem; */
-  /* flex: 1 0 auto; */
+  /* min-width: 1rem; */
+  flex: 1 0 auto;
   aspect-ratio: 3/17;
 	background-color: white;
 	border-color: black;
@@ -13,10 +13,12 @@
 .key.black {
   background-color: black;
   /* flex: .4 0 auto; */
-  height: 64%;
+  /* height: 64%; */
   z-index: 2;
   position: relative;
   left: calc(-1/88 * 100% *1/2);
+  transform-origin: top left;
+  transform: scale(.64);
 }
 
 .key[aria-pressed="true"] {
@@ -24,5 +26,5 @@
 }
 
 .key.black + .key {
-  margin-left: calc(-1/78 * 100%);
+  margin-left: calc(-1/53 * 100%);
 }
