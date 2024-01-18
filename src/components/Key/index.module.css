@@ -1,8 +1,8 @@
 .key {
 	/* height: 5rem; */
   /* width: 1rem; */
-  flex: 1 0 auto;
-  aspect-ratio: 1/6;
+  /* flex: 1 0 auto; */
+  aspect-ratio: 3/17;
 	background-color: white;
 	border-color: black;
 	border-width: 1px;
@@ -12,9 +12,17 @@
 
 .key.black {
   background-color: black;
-  flex: .4 0 auto;
+  /* flex: .4 0 auto; */
+  height: 64%;
+  z-index: 2;
+  position: relative;
+  left: calc(-1/88 * 100% *1/2);
 }
 
 .key[aria-pressed="true"] {
   background-color: aqua;
+}
+
+.key.black + .key {
+  margin-left: calc(-1/78 * 100%);
 }

@@ -1,4 +1,6 @@
 #keyboard {
   display: flex;
   justify-content: center;
+  height:8rem;
+  position: relative;
 }
