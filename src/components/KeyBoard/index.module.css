@@ -1,7 +1,5 @@
 #keyboard {
   display: flex;
   justify-content: center;
-  /* height:8rem; */
   min-width: 20cm;
-  position: relative;
 }

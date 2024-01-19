@@ -1,15 +1,13 @@
 :root {
   --key-width-proportion: 3;
   --key-height-proportion: 17;
-  --black-key-scale-x: .6;
+  --black-key-scale-x: .52;
   --black-key-scale-y: .64;
-  --white-left-shift: calc(-1/52 * 100%);
-  --black-off-center: 10%;
+  --black-off-center: 14%;
+  --num-white-keys: 52;
 }
 
 .key {
-	/* height: 5rem; */
-  /* min-width: 1rem; */
   flex: 1 0 auto;
   aspect-ratio: var(--key-width-proportion)/var(--key-height-proportion);
 	background-color: white;
@@ -21,28 +19,37 @@
 
 .key.black {
   background-color: black;
-  /* flex: .4 0 auto; */
-  /* height: 64%; */
-  z-index: 2;
-  position: relative;
-  /* left: calc(-1/88 * 100% *1/2); */
-  transform-origin: top left;
-  transform: scale(var(--black-key-scale-x), var(--black-key-scale-y)) translateX(-50%);
   border-radius: 2px;
+  z-index: 2;  
+  transform-origin: top left;
+  transform: 
+    scale(var(--black-key-scale-x), var(--black-key-scale-y)) 
+    translateX(-50%);
 }
 
+/* Offset black keys on the left of a cluster a litte more left.
+Emulates actual keyboard layout and makes the top widths of white
+keys and black keys nearly equal. */
 .key.black.left {
-  transform: scale(var(--black-key-scale-x), var(--black-key-scale-y)) translateX(calc(-50% - var(--black-off-center)));
+  transform: 
+    scale(var(--black-key-scale-x), var(--black-key-scale-y)) 
+    translateX(calc(-50% - var(--black-off-center)));
 }
 
+/* Offset black keys on the right of a cluster a litte more right.
+Emulates actual keyboard layout and makes the top widths of white
+keys and black keys nearly equal. */
 .key.black.right {
-  transform: scale(var(--black-key-scale-x), var(--black-key-scale-y)) translateX(calc(-50% + var(--black-off-center)));
+  transform: 
+    scale(var(--black-key-scale-x), var(--black-key-scale-y)) 
+    translateX(calc(-50% + var(--black-off-center)));
+}
+
+/* Close gaps in the white keys from where the black keys were. */
+.key.black + .key {
+  margin-left: calc(-1/var(--num-white-keys) * 100%);
 }
 
 .key[aria-pressed="true"] {
   background-color: aqua;
-}
-
-.key.black + .key {
-  margin-left: var(--white-left-shift);
 }
