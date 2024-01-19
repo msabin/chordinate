@@ -10,7 +10,8 @@
 .key {
   flex: 1 0 auto;
   aspect-ratio: var(--key-width-proportion)/var(--key-height-proportion);
-	background-color: white;
+	background-color: #919191;
+  box-shadow: inset -1px -1px 1px 0px rgb(107 107 107);
 	border-color: black;
 	border-width: 1px;
 	border-style: solid;
@@ -18,7 +19,9 @@
 }
 
 .key.black {
-  background-color: black;
+  background-color: #23edf2;
+  box-shadow: inset -2px -2px 0 0 rgb(73 165 162);
+  border-color: black;
   border-radius: 2px;
   z-index: 2;  
   transform-origin: top left;
@@ -51,5 +54,6 @@ keys and black keys nearly equal. */
 }
 
 .key[aria-pressed="true"] {
-  background-color: aqua;
+  background-color: #fc6fff;
+  box-shadow: inset -1px -1px 1px 0px rgb(161 41 176);
 }
