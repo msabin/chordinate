@@ -1,13 +1,22 @@
+:root {
+  --key-width-proportion: 3;
+  --key-height-proportion: 17;
+  --black-key-scale-x: .6;
+  --black-key-scale-y: .64;
+  --white-left-shift: calc(-1/52 * 100%);
+  --black-off-center: 10%;
+}
+
 .key {
 	/* height: 5rem; */
   /* min-width: 1rem; */
   flex: 1 0 auto;
-  aspect-ratio: 3/17;
+  aspect-ratio: var(--key-width-proportion)/var(--key-height-proportion);
 	background-color: white;
 	border-color: black;
 	border-width: 1px;
 	border-style: solid;
-  border-radius: 3px;
+  border-radius: 0 0 3px 3px;
 }
 
 .key.black {
@@ -16,9 +25,18 @@
   /* height: 64%; */
   z-index: 2;
   position: relative;
-  left: calc(-1/88 * 100% *1/2);
+  /* left: calc(-1/88 * 100% *1/2); */
   transform-origin: top left;
-  transform: scale(.64);
+  transform: scale(var(--black-key-scale-x), var(--black-key-scale-y)) translateX(-50%);
+  border-radius: 2px;
+}
+
+.key.black.left {
+  transform: scale(var(--black-key-scale-x), var(--black-key-scale-y)) translateX(calc(-50% - var(--black-off-center)));
+}
+
+.key.black.right {
+  transform: scale(var(--black-key-scale-x), var(--black-key-scale-y)) translateX(calc(-50% + var(--black-off-center)));
 }
 
 .key[aria-pressed="true"] {
@@ -26,5 +44,5 @@
 }
 
 .key.black + .key {
-  margin-left: calc(-1/53 * 100%);
+  margin-left: var(--white-left-shift);
 }
