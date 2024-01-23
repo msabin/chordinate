@@ -1,19 +1,24 @@
 import { useRef } from "react";
 
-class ConsoleAudio {
-  constructor(Hz) {
+const A4 = 440;
+const MIDI_A4 = 69;
+
+const ATTACK = .1;
+const RELEASE = 4;
+const WAVEFORM = 'triangle'
+
+class Oscillators {
+
+  // Create an audio context for oscillators and a stack of oscillators
+  constructor() {
     this.context = new AudioContext();
 
-    this.osc = this.context.createOscillator();
-    this.osc.frequency.setValueAtTime(Hz, this.context.currentTime);
-    this.osc.setPeriodicWave(this.context.createPeriodicWave([0, 0], [0, 0]));
-    this.osc.start();
+    this.oscillators = {};
 
     this.currentVol = .25;
     this.vol = this.context.createGain();
     this.vol.gain.setValueAtTime(this.currentVol, this.context.currentTime);
 
-    this.osc.connect(this.vol);
     this.vol.connect(this.context.destination);
   }
 
@@ -24,40 +29,44 @@ class ConsoleAudio {
     // setValueAtTime(this.currentVol, this.context.currentTime);;
   }
 
-  muteToggle() {
-    if (this.vol.gain.value > 0) {
-      this.vol.gain.setValueAtTime(0, this.context.currentTime);
-    }
-    else {
-      this.vol.gain.setValueAtTime(this.currentVol, this.context.currentTime);
-    }
+
+  playNote(midiNote) {
+    const distFromA4 = midiNote - MIDI_A4;
+    const Hz = 2 ** ((1 / 12) * distFromA4) * A4;
+
+    const osc = this.context.createOscillator();
+    const gain = this.context.createGain();
+
+    osc.frequency.setValueAtTime(Hz, this.context.currentTime);
+    osc.type = WAVEFORM;
+    gain.gain.setValueAtTime(0, this.context.currentTime);
+
+    osc.connect(gain);
+    gain.connect(this.vol);
+
+    // Start the attack of the note and the note's oscillator
+    gain.gain.exponentialRampToValueAtTime(1.0, this.context.currentTime + ATTACK);
+    osc.start();
+
+    // Remember the oscillator and gain node to turn them off later
+    this.oscillators[midiNote] = [osc, gain];
   }
 
-  setHz(Hz) {
-    this.osc.frequency.setValueAtTime(Hz, this.context.currentTime);
-  }
+  stopNote(midiNote) {
+    const [osc, gain] = this.oscillators[midiNote];
 
-  setWave(pcm) {
-    const real = pcm.slice();
-    const imag = pcm.slice().fill(0);
+    // exponentialRampToValueAtTime doesn't accept 0, require positive number
+    gain.gain.exponentialRampToValueAtTime(.00000001, this.context.currentTime + RELEASE);
+    setTimeout(() => { osc.stop(); gain.disconnect(); }, RELEASE * 1000);
 
-    // Use FFT to fill real and imag with frequency domain.
-    transform(real, imag);
-
-    // Create a PeriodicWave object with the spectrum.
-    const period = this.context.createPeriodicWave(
-      real.slice(0, real.length / 2), // Divide by 2 to get up to Nyquist .
-      imag.slice(0, imag.length / 2)
-    );
-    this.osc.setPeriodicWave(period);
-    this.context.resume();
+    delete this.oscillators[midiNote];
   }
 }
 
-export function useAudio(Hz) {
-  const audioRef = useRef();
-  if (!audioRef.current) {
-    audioRef.current = new ConsoleAudio(Hz);
+export function useOscillators() {
+  const oscRef = useRef();
+  if (!oscRef.current) {
+    oscRef.current = new Oscillators();
   }
-  return audioRef.current;
+  return oscRef.current;
 }

@@ -2,8 +2,9 @@ const MIDI_PRESS = parseInt("90", 16);
 const MIDI_RELEASE = parseInt("80", 16);
 
 let midi = null;
+let pressKey, releaseKey;
 
-export function midiSetup() {
+export function midiSetup(onPressKey, onReleaseKey) {
   try {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
   } catch {
@@ -11,6 +12,8 @@ export function midiSetup() {
       "This browser doesn't support MIDI.  If you would like to use a MIDI keyboard with this app, please use a different browser like Firefox or Chrome."
     );
   }
+  pressKey = onPressKey;
+  releaseKey = onReleaseKey;
 }
 
 function onMIDISuccess(midiAccess) {
@@ -51,15 +54,10 @@ function onMIDIMessage(event) {
   console.log(str);
   console.log('MIDI note:', event.data[1]);
 
-  const key = document.getElementById(event.data[1]);
-
   if (event.data[0] === MIDI_PRESS) {
-    
-    key.ariaPressed = 'true';
-
-    // Change the styling of the key corresponding to MIDI the note event.data[1]
+    pressKey(event.data[1]);
   }
   else if (event.data[0] === MIDI_RELEASE) {
-    key.ariaPressed = 'false';
+    releaseKey(event.data[1]);
   }
 }
