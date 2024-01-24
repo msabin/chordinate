@@ -3,9 +3,10 @@ import { useRef } from "react";
 const A4 = 440;
 const MIDI_A4 = 69;
 
-const ATTACK = .1;
-const RELEASE = 4;
-const WAVEFORM = 'triangle'
+const ATTACK = 0;
+const RELEASE = 5;
+
+let waveForm = 'sine';
 
 class Oscillators {
 
@@ -38,14 +39,15 @@ class Oscillators {
     const gain = this.context.createGain();
 
     osc.frequency.setValueAtTime(Hz, this.context.currentTime);
-    osc.type = WAVEFORM;
+    osc.type = waveForm;
     gain.gain.setValueAtTime(0, this.context.currentTime);
 
     osc.connect(gain);
     gain.connect(this.vol);
 
+    gain.gain.setValueAtTime(gain.gain.value, this.context.currentTime);
     // Start the attack of the note and the note's oscillator
-    gain.gain.exponentialRampToValueAtTime(1.0, this.context.currentTime + ATTACK);
+    gain.gain.exponentialRampToValueAtTime(1, this.context.currentTime + ATTACK);
     osc.start();
 
     // Remember the oscillator and gain node to turn them off later
@@ -55,11 +57,21 @@ class Oscillators {
   stopNote(midiNote) {
     const [osc, gain] = this.oscillators[midiNote];
 
+    gain.gain.setValueAtTime(gain.gain.value, this.context.currentTime);
     // exponentialRampToValueAtTime doesn't accept 0, require positive number
     gain.gain.exponentialRampToValueAtTime(.00000001, this.context.currentTime + RELEASE);
     setTimeout(() => { osc.stop(); gain.disconnect(); }, RELEASE * 1000);
 
     delete this.oscillators[midiNote];
+  }
+
+  setWaveForm(shape) {
+    waveForm = shape;
+
+    Object.keys(this.oscillators).forEach( midiNote => {
+      this.stopNote(midiNote);
+      this.playNote(midiNote);
+    })
   }
 }
 

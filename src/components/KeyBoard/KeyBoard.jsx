@@ -29,6 +29,21 @@ export function KeyBoard(){
         'p', ';']
 
     function handleKeyDown(e) {
+      switch (e.key) {
+        case '1':
+          oscillators.setWaveForm("sine");
+          return;
+        case '2':
+          oscillators.setWaveForm("triangle");
+          return;
+        case '3':
+          oscillators.setWaveForm("square");
+          return;
+        case '4':
+          oscillators.setWaveForm("sawtooth");
+          return;
+      }
+
       if ( e.repeat ) return;
 
       const midiNote = keyboard.indexOf(e.key.toLowerCase()) + 60
