@@ -6,6 +6,7 @@ import styles from "./index.module.css";
 
 export function KeyBoard(){
   const oscillators = useOscillators();
+  const socket = io();
 
   useEffect(() => {
     midiSetup(handlePressKey, handleReleaseKey);
@@ -13,6 +14,8 @@ export function KeyBoard(){
     function handlePressKey(midiNote) {
       const key = document.getElementById(midiNote)
       key.ariaPressed = 'true';
+
+      socket.emit('midi message', midiNote);
 
       oscillators.playNote(midiNote);
     }
