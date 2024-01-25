@@ -1,12 +1,13 @@
 import { Key } from "../Key/Key"
 import { useEffect } from 'react'
-import { midiSetup } from '/src/audio/midiSetup'
-import { useOscillators } from "/src/audio/audioSetup";
+import { midiSetup } from '/src/utils/midiSetup'
+import { useOscillators } from "/src/utils/audioSetup";
+import { useSocket } from "/src/utils/socketSetup";
 import styles from "./index.module.css";
 
 export function KeyBoard(){
   const oscillators = useOscillators();
-  const socket = io();
+  const socket = useSocket();
 
   useEffect(() => {
     midiSetup(handlePressKey, handleReleaseKey);
