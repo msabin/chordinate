@@ -32,6 +32,10 @@ class Oscillators {
 
 
   playNote(midiNote, velocity) {
+    if ( this.oscillators[midiNote] ){
+      return;
+    }
+
     const distFromA4 = midiNote - MIDI_A4;
     const Hz = 2 ** ((1 / 12) * distFromA4) * A4;
 
