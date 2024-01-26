@@ -12,13 +12,12 @@ export function KeyBoard(){
   useEffect(() => {
     midiSetup(handlePressKey, handleReleaseKey);
 
-    function handlePressKey(midiNote) {
+    function handlePressKey(midiNote, velocity) {
+      socket.emit('midi message', midiNote);
       const key = document.getElementById(midiNote)
       key.ariaPressed = 'true';
 
-      socket.emit('midi message', midiNote);
-
-      oscillators.playNote(midiNote);
+      oscillators.playNote(midiNote, velocity);
     }
 
     function handleReleaseKey(midiNote) {
@@ -28,9 +27,10 @@ export function KeyBoard(){
       oscillators.stopNote(midiNote);
     }
 
-    const keyboard = ['a', 'w', 's', 'e', 'd', 'f', 
+    const KEYBOARD = ['a', 'w', 's', 'e', 'd', 'f', 
         't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 
         'p', ';']
+    const KEY_VELOCTIY = .5;
 
     function handleKeyDown(e) {
       switch (e.key) {
@@ -50,15 +50,15 @@ export function KeyBoard(){
 
       if ( e.repeat ) return;
 
-      const midiNote = keyboard.indexOf(e.key.toLowerCase()) + 60
+      const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
-        handlePressKey(midiNote);
+        handlePressKey(midiNote, KEY_VELOCTIY);
       }
     }
 
     function handleKeyUp(e) {
 
-      const midiNote = keyboard.indexOf(e.key.toLowerCase()) + 60
+      const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
         handleReleaseKey(midiNote);
       }

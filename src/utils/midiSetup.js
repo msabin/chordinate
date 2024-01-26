@@ -1,5 +1,6 @@
 const MIDI_PRESS = parseInt("90", 16);
 const MIDI_RELEASE = parseInt("80", 16);
+const MAX_VELOCITY = 127;
 
 let midi = null;
 let pressKey, releaseKey;
@@ -49,13 +50,13 @@ function startLoggingMIDIInput(midiAccess) {
 function onMIDIMessage(event) {
   let str = `MIDI message received at timestamp ${event.timeStamp}[${event.data.length} bytes]: `;
   for (const character of event.data) {
-    str += `0x${character.toString(16)} `;
+    str += character.toString(10) + ' ';
   }
   console.log(str);
-  console.log('MIDI note:', event.data[1]);
 
   if (event.data[0] === MIDI_PRESS) {
-    pressKey(event.data[1]);
+    console.log(event.data[2] / MAX_VELOCITY);
+    pressKey(event.data[1], event.data[2] / MAX_VELOCITY);
   }
   else if (event.data[0] === MIDI_RELEASE) {
     releaseKey(event.data[1]);

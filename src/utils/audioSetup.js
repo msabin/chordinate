@@ -31,7 +31,7 @@ class Oscillators {
   }
 
 
-  playNote(midiNote) {
+  playNote(midiNote, velocity) {
     const distFromA4 = midiNote - MIDI_A4;
     const Hz = 2 ** ((1 / 12) * distFromA4) * A4;
 
@@ -47,7 +47,7 @@ class Oscillators {
 
     gain.gain.setValueAtTime(gain.gain.value, this.context.currentTime);
     // Start the attack of the note and the note's oscillator
-    gain.gain.exponentialRampToValueAtTime(1, this.context.currentTime + ATTACK);
+    gain.gain.exponentialRampToValueAtTime(velocity, this.context.currentTime + ATTACK);
     osc.start();
 
     // Remember the oscillator and gain node to turn them off later
