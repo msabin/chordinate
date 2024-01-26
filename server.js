@@ -10,7 +10,7 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use('/chordinate', express.static(join(__dirname, 'dist')));
+app.use(express.static(join(__dirname, 'dist')));
 
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'dist/index.html'));
