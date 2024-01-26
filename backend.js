@@ -19,9 +19,15 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   console.log('a user connected');
 
-  socket.on('midi message', (midi) => {
-    console.log('MIDI: ' + midi);
+  socket.on('midi press', (midi, velocity) => {
+    console.log('MIDI: ' + midi + " " + velocity);
+
+    socket.broadcast.emit('midi press', midi, velocity);
   });
+
+  socket.on('midi release', (midi) => {
+    console.log('MIDI RELEASE:' + midi);
+  })
 
   socket.on('disconnect', () => {
     console.log('user disconnected');

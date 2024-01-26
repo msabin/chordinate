@@ -13,7 +13,7 @@ export function KeyBoard(){
     midiSetup(handlePressKey, handleReleaseKey);
 
     function handlePressKey(midiNote, velocity) {
-      socket.emit('midi message', midiNote);
+      socket.emit('midi press', midiNote, velocity);
       const key = document.getElementById(midiNote)
       key.ariaPressed = 'true';
 
@@ -66,6 +66,10 @@ export function KeyBoard(){
 
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
+
+    socket.on('midi press', (midi, velocity) => {
+      handlePressKey(midi, velocity);
+    })
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
