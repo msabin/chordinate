@@ -10,10 +10,9 @@ export function KeyBoard(){
   const socket = useSocket();
 
   useEffect(() => {
-    midiSetup(handlePressKey, handleReleaseKey);
+    midiSetup(handlePressKey, handleReleaseKey, socket);
 
     function handlePressKey(midiNote, velocity) {
-      socket.emit('midi press', midiNote, velocity);
       const key = document.getElementById(midiNote)
       key.ariaPressed = 'true';
 
@@ -52,6 +51,7 @@ export function KeyBoard(){
 
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
+        socket.emit('midi press', midiNote, KEY_VELOCTIY);
         handlePressKey(midiNote, KEY_VELOCTIY);
       }
     }
@@ -60,6 +60,7 @@ export function KeyBoard(){
 
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
+        socket.emit('midi release', midiNote);
         handleReleaseKey(midiNote);
       }
     }
@@ -69,6 +70,10 @@ export function KeyBoard(){
 
     socket.on('midi press', (midi, velocity) => {
       handlePressKey(midi, velocity);
+    })
+
+    socket.on('midi release', (midi) => {
+      handleReleaseKey(midi);
     })
 
     return () => {

@@ -3,9 +3,9 @@ const MIDI_RELEASE = parseInt("80", 16);
 const MAX_VELOCITY = 127;
 
 let midi = null;
-let pressKey, releaseKey;
+let pressKey, releaseKey, socket;
 
-export function midiSetup(onPressKey, onReleaseKey) {
+export function midiSetup(onPressKey, onReleaseKey, webSocket) {
   try {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
   } catch {
@@ -15,6 +15,10 @@ export function midiSetup(onPressKey, onReleaseKey) {
   }
   pressKey = onPressKey;
   releaseKey = onReleaseKey;
+  socket = webSocket;
+
+  console.log(pressKey);
+  console.log(socket);
 }
 
 function onMIDISuccess(midiAccess) {
@@ -54,11 +58,16 @@ function onMIDIMessage(event) {
   }
   console.log(str);
 
+  const midiNote = event.data[1];
   if (event.data[0] === MIDI_PRESS) {
-    console.log(event.data[2] / MAX_VELOCITY);
-    pressKey(event.data[1], event.data[2] / MAX_VELOCITY);
+    const normVelocity = event.data[2] / MAX_VELOCITY;
+    console.log(normVelocity);
+    console.log(socket);
+    socket.emit('midi press', midiNote, normVelocity);
+    pressKey(midiNote, normVelocity);
   }
   else if (event.data[0] === MIDI_RELEASE) {
-    releaseKey(event.data[1]);
+    socket.emit('midi release', midiNote);
+    releaseKey(midiNote);
   }
 }

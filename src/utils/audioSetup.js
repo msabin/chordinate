@@ -55,6 +55,10 @@ class Oscillators {
   }
 
   stopNote(midiNote) {
+    if ( !this.oscillators[midiNote] ){
+      return;
+    }
+
     const [osc, gain] = this.oscillators[midiNote];
 
     gain.gain.setValueAtTime(gain.gain.value, this.context.currentTime);

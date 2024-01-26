@@ -27,6 +27,8 @@ io.on('connection', (socket) => {
 
   socket.on('midi release', (midi) => {
     console.log('MIDI RELEASE:' + midi);
+
+    socket.broadcast.emit('midi release', midi);
   })
 
   socket.on('disconnect', () => {
