@@ -10,32 +10,47 @@ const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
-app.use(express.static(join(__dirname, 'dist')));
-
 app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'dist/index.html'));
 });
 
+app.use(express.static(join(__dirname, 'dist')));
+
+let numSockets = 0;
+const freeSockets = []
+
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  let socketNum;
+  if ( freeSockets.length >= 1 ) {
+    socketNum = freeSockets.pop();
+  }
+  else {
+    numSockets++;
+    socketNum = numSockets;
+  }
+
+  socket.emit('number assignment', socketNum);
+  console.log('User connected.  Assigned number: ' + socketNum);
 
   socket.on('midi press', (midi, velocity) => {
     console.log('MIDI: ' + midi + " " + velocity);
 
-    socket.broadcast.emit('midi press', midi, velocity);
+    socket.broadcast.emit('midi press', midi, velocity, socketNum);
   });
 
   socket.on('midi release', (midi) => {
     console.log('MIDI RELEASE:' + midi);
 
-    socket.broadcast.emit('midi release', midi);
+    socket.broadcast.emit('midi release', midi, socketNum);
   })
 
   socket.on('disconnect', () => {
-    console.log('user disconnected');
+    console.log('Socket' + socketNum + ' disconnected');
+    freeSockets.push(socketNum);
   });
 });
 
+// Turn on Node.js's event loop for the server to listen for requests
 server.listen(3000, () => {
   console.log('server running at http://localhost:3000');
 });

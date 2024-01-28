@@ -68,11 +68,14 @@ export function KeyBoard(){
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
-    socket.on('midi press', (midi, velocity) => {
+    socket.on('midi press', (midi, velocity, socketNum) => {
+      const key = document.getElementById(midi)
+      console.log(socketNum);
+
       handlePressKey(midi, velocity);
     })
 
-    socket.on('midi release', (midi) => {
+    socket.on('midi release', (midi, socketNum) => {
       handleReleaseKey(midi);
     })
 

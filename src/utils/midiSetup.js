@@ -16,9 +16,6 @@ export function midiSetup(onPressKey, onReleaseKey, webSocket) {
   pressKey = onPressKey;
   releaseKey = onReleaseKey;
   socket = webSocket;
-
-  console.log(pressKey);
-  console.log(socket);
 }
 
 function onMIDISuccess(midiAccess) {
@@ -61,8 +58,7 @@ function onMIDIMessage(event) {
   const midiNote = event.data[1];
   if (event.data[0] === MIDI_PRESS) {
     const normVelocity = event.data[2] / MAX_VELOCITY;
-    console.log(normVelocity);
-    console.log(socket);
+
     socket.emit('midi press', midiNote, normVelocity);
     pressKey(midiNote, normVelocity);
   }
