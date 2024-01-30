@@ -12,18 +12,40 @@ export function KeyBoard(){
   useEffect(() => {
     midiSetup(handlePressKey, handleReleaseKey, socket);
 
-    function handlePressKey(midiNote, velocity) {
+    function handlePressKey(midiNote, velocity, hue) {
       const key = document.getElementById(midiNote)
-      key.ariaPressed = 'true';
+      
+      // If key is already pressed, just mix in the new hue
+      if ( key.ariaPressed === 'true') {
+        const currentHue = key.style.getPropertyValue('--current-hue');
 
-      oscillators.playNote(midiNote, velocity);
+        key.style.setProperty('--current-hue', (currentHue + hue)/2);
+      }
+      // Otherwise, set it to the incoming hue and play the key
+      else {
+        key.style.setProperty('--current-hue', hue);
+        key.ariaPressed = 'true';
+
+        oscillators.playNote(midiNote, velocity);
+      }
     }
 
-    function handleReleaseKey(midiNote) {
-      const key = document.getElementById(midiNote)
-      key.ariaPressed = 'false';
+    function handleReleaseKey(midiNote, hue) {
+      const key = document.getElementById(midiNote);
+      
+      const currentHue = key.style.getPropertyValue('--current-hue');
 
-      oscillators.stopNote(midiNote);
+      let newHue;
+      if ( currentHue === hue) {
+        newHue = 0;
+        key.ariaPressed = 'false';
+        oscillators.stopNote(midiNote);
+      }
+      else {      
+        newHue = currentHue * 2 - hue;
+      }
+            
+      key.style.setProperty('--current-hue', newHue);
     }
 
     const KEYBOARD = ['a', 'w', 's', 'e', 'd', 'f', 
@@ -55,7 +77,7 @@ export function KeyBoard(){
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
         socket.emit('midi press', midiNote, KEY_VELOCTIY, ourHue);
-        handlePressKey(midiNote, KEY_VELOCTIY);
+        handlePressKey(midiNote, KEY_VELOCTIY, ourHue);
       }
     }
 
@@ -64,7 +86,7 @@ export function KeyBoard(){
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
         socket.emit('midi release', midiNote, ourHue);
-        handleReleaseKey(midiNote);
+        handleReleaseKey(midiNote, ourHue);
       }
     }
 
@@ -72,38 +94,11 @@ export function KeyBoard(){
     document.addEventListener('keyup', handleKeyUp);
 
     socket.on('midi press', (midi, velocity, hue) => {
-      const key = document.getElementById(midi);
-
-      // If no one else is pressing the key, then we just press it 
-      // ourselves normally
-      if ( key.ariaPressed === 'false') {
-
-        handlePressKey(midi, velocity);
-
-      }
-      // Otherwise, we leave it pressed and adjust the hue according to 
-      // the hue of the other user
-      else {
-        const currentHue = key.style.getPropertyValue('--current-hue');
-
-        key.style.setProperty('--current-hue', (currentHue + hue)/2);
-      }
+      handlePressKey(midi, velocity, hue);
     })
 
     socket.on('midi release', (midi, hue) => {
-      const key = document.getElementById(midi);
-      const currentHue = key.getPropertyValue('--current-hue');
-
-      const newHue = currentHue*2 - hue;
-      key.style.setProperty('--current-hue', newHue);
-
-      // If removing someone else's key press leaves us with our own hue,
-      // 
-      if ( newHue === ourHue && key.ariaPressed === 'false') {
-        handleReleaseKey(midi);
-      }
-      
-      
+        handleReleaseKey(midi, hue);
     })
 
     return () => {
