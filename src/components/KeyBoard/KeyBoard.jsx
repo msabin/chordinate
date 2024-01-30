@@ -14,18 +14,19 @@ export function KeyBoard(){
 
     function handlePressKey(midiNote, velocity, hue) {
       const key = document.getElementById(midiNote)
-      
+
       // If key is already pressed, just mix in the new hue
       if ( key.ariaPressed === 'true') {
         const currentHue = key.style.getPropertyValue('--current-hue');
-
+        
         key.style.setProperty('--current-hue', (currentHue + hue)/2);
+        console.log("averaging hues " + currentHue + " and " + hue);
       }
       // Otherwise, set it to the incoming hue and play the key
       else {
         key.style.setProperty('--current-hue', hue);
         key.ariaPressed = 'true';
-
+        console.log("setting hue to " + hue);
         oscillators.playNote(midiNote, velocity);
       }
     }
@@ -35,16 +36,21 @@ export function KeyBoard(){
       
       const currentHue = key.style.getPropertyValue('--current-hue');
 
+      console.log("Release - current hue: " + currentHue + " removing hue: " + hue);
+      console.log(hue === currentHue);
       let newHue;
-      if ( currentHue === hue) {
+      if ( Number(currentHue) === Number(hue)) {
         newHue = 0;
         key.ariaPressed = 'false';
         oscillators.stopNote(midiNote);
+
+        console.log("releasing note");
       }
       else {      
         newHue = currentHue * 2 - hue;
+        console.log("removing hue " + hue + " from " + currentHue);
       }
-            
+
       key.style.setProperty('--current-hue', newHue);
     }
 
@@ -53,8 +59,6 @@ export function KeyBoard(){
         'p', ';']
     const KEY_VELOCTIY = .5;
 
-    const root = document.documentElement;
-    const ourHue = root.style.getPropertyValue('--pressed-key-hue');
 
     function handleKeyDown(e) {
       switch (e.key) {
@@ -76,8 +80,8 @@ export function KeyBoard(){
 
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
-        socket.emit('midi press', midiNote, KEY_VELOCTIY, ourHue);
-        handlePressKey(midiNote, KEY_VELOCTIY, ourHue);
+        socket.emit('midi press', midiNote, KEY_VELOCTIY, socket.hue);
+        handlePressKey(midiNote, KEY_VELOCTIY, socket.hue);
       }
     }
 
@@ -85,8 +89,8 @@ export function KeyBoard(){
 
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
-        socket.emit('midi release', midiNote, ourHue);
-        handleReleaseKey(midiNote, ourHue);
+        socket.emit('midi release', midiNote, socket.hue);
+        handleReleaseKey(midiNote, socket.hue);
       }
     }
 
