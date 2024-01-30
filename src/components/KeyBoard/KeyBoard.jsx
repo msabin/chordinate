@@ -31,6 +31,9 @@ export function KeyBoard(){
         'p', ';']
     const KEY_VELOCTIY = .5;
 
+    const root = document.documentElement;
+    const ourHue = root.style.getPropertyValue('--pressed-key-hue');
+
     function handleKeyDown(e) {
       switch (e.key) {
         case '1':
@@ -51,7 +54,7 @@ export function KeyBoard(){
 
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
-        socket.emit('midi press', midiNote, KEY_VELOCTIY);
+        socket.emit('midi press', midiNote, KEY_VELOCTIY, ourHue);
         handlePressKey(midiNote, KEY_VELOCTIY);
       }
     }
@@ -60,7 +63,7 @@ export function KeyBoard(){
 
       const midiNote = KEYBOARD.indexOf(e.key.toLowerCase()) + 60
       if (midiNote !== 59) {
-        socket.emit('midi release', midiNote);
+        socket.emit('midi release', midiNote, ourHue);
         handleReleaseKey(midiNote);
       }
     }
@@ -68,15 +71,39 @@ export function KeyBoard(){
     document.addEventListener('keydown', handleKeyDown);
     document.addEventListener('keyup', handleKeyUp);
 
-    socket.on('midi press', (midi, velocity, socketNum) => {
-      const key = document.getElementById(midi)
-      console.log(socketNum);
+    socket.on('midi press', (midi, velocity, hue) => {
+      const key = document.getElementById(midi);
 
-      handlePressKey(midi, velocity);
+      // If no one else is pressing the key, then we just press it 
+      // ourselves normally
+      if ( key.ariaPressed === 'false') {
+
+        handlePressKey(midi, velocity);
+
+      }
+      // Otherwise, we leave it pressed and adjust the hue according to 
+      // the hue of the other user
+      else {
+        const currentHue = key.style.getPropertyValue('--current-hue');
+
+        key.style.setProperty('--current-hue', (currentHue + hue)/2);
+      }
     })
 
-    socket.on('midi release', (midi, socketNum) => {
-      handleReleaseKey(midi);
+    socket.on('midi release', (midi, hue) => {
+      const key = document.getElementById(midi);
+      const currentHue = key.getPropertyValue('--current-hue');
+
+      const newHue = currentHue*2 - hue;
+      key.style.setProperty('--current-hue', newHue);
+
+      // If removing someone else's key press leaves us with our own hue,
+      // 
+      if ( newHue === ourHue && key.ariaPressed === 'false') {
+        handleReleaseKey(midi);
+      }
+      
+      
     })
 
     return () => {

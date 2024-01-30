@@ -18,6 +18,7 @@ app.use(express.static(join(__dirname, 'dist')));
 
 let numSockets = 0;
 const freeSockets = []
+const userHue = {}
 
 io.on('connection', (socket) => {
   let socketNum;
@@ -29,19 +30,23 @@ io.on('connection', (socket) => {
     socketNum = numSockets;
   }
 
-  socket.emit('number assignment', socketNum);
-  console.log('User connected.  Assigned number: ' + socketNum);
+  if ( !userHue[socketNum] ){
+    userHue[socketNum] = (299 + 83*(socketNum-1))%360;
+  }
+
+  socket.emit('hue assignment', userHue[socketNum]);
+  console.log(`User connected.  Assigned hue: ${userHue[socketNum]}deg`);
 
   socket.on('midi press', (midi, velocity) => {
     console.log('MIDI: ' + midi + " " + velocity);
 
-    socket.broadcast.emit('midi press', midi, velocity, socketNum);
+    socket.broadcast.emit('midi press', midi, velocity, userHue[socketNum]);
   });
 
   socket.on('midi release', (midi) => {
     console.log('MIDI RELEASE:' + midi);
 
-    socket.broadcast.emit('midi release', midi, socketNum);
+    socket.broadcast.emit('midi release', midi, userHue[socketNum]);
   })
 
   socket.on('disconnect', () => {

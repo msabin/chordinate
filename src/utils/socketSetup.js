@@ -6,10 +6,9 @@ export function useSocket() {
   if ( !socketRef.current ) {
     socketRef.current = io();
 
-    socketRef.current.on('number assignment', (number) => {
+    socketRef.current.on('hue assignment', (hue) => {
       const root = document.documentElement;
-      console.log((299 + 83*(number-1))%360);
-      root.style.setProperty('--pressed-key-hue', (299 + 83*(number-1))%360);
+      root.style.setProperty('--pressed-key-hue', hue);
     })
   }
   return socketRef.current;

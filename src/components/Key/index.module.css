@@ -55,6 +55,7 @@ keys and black keys nearly equal. */
 }
 
 .key[aria-pressed="true"] {
-  background-color: hsl(var(--pressed-key-hue), 100%, 72%);
-  box-shadow: inset -1px -1px 1px 0px rgb(161 41 176);
+  --current-hue: var(--pressed-key-hue);
+  background-color: hsl(var(--current-hue), 100%, 72%);
+  box-shadow: inset -1px -1px 1px 0px hsl(var(--current-hue), 100%, 25%);
 }
