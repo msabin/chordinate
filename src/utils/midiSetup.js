@@ -10,7 +10,7 @@ export function midiSetup(onPressKey, onReleaseKey, webSocket) {
     navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
   } catch {
     alert(
-      "This browser doesn't support MIDI.  If you would like to use a MIDI keyboard with this app, please use a different browser like Firefox or Chrome."
+      "This browser doesn't support MIDI.  You can still use your computer keyboard, but if you would like to use a MIDI keyboard with this app, please use a different browser like Firefox or Chrome."
     );
   }
   pressKey = onPressKey;
@@ -59,11 +59,11 @@ function onMIDIMessage(event) {
   if (event.data[0] === MIDI_PRESS) {
     const normVelocity = event.data[2] / MAX_VELOCITY;
 
-    socket.emit('midi press', midiNote, normVelocity);
-    pressKey(midiNote, normVelocity);
+    socket.emit('midi press', midiNote, normVelocity, socket.hue);
+    pressKey(midiNote, normVelocity, socket.hue);
   }
   else if (event.data[0] === MIDI_RELEASE) {
-    socket.emit('midi release', midiNote);
-    releaseKey(midiNote);
+    socket.emit('midi release', midiNote, socket.hue);
+    releaseKey(midiNote, socket.hue);
   }
 }

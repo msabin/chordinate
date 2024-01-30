@@ -13,11 +13,12 @@ export function KeyBoard(){
     midiSetup(handlePressKey, handleReleaseKey, socket);
 
     function handlePressKey(midiNote, velocity, hue) {
-      const key = document.getElementById(midiNote)
+      const key = document.getElementById(midiNote);
+      hue = Number(hue);
 
       // If key is already pressed, just mix in the new hue
       if ( key.ariaPressed === 'true') {
-        const currentHue = key.style.getPropertyValue('--current-hue');
+        const currentHue = Number(key.style.getPropertyValue('--current-hue'));
         
         key.style.setProperty('--current-hue', (currentHue + hue)/2);
         console.log("averaging hues " + currentHue + " and " + hue);
@@ -33,13 +34,14 @@ export function KeyBoard(){
 
     function handleReleaseKey(midiNote, hue) {
       const key = document.getElementById(midiNote);
-      
-      const currentHue = key.style.getPropertyValue('--current-hue');
+
+      hue = Number(hue);
+      const currentHue =  Number(key.style.getPropertyValue('--current-hue'));
 
       console.log("Release - current hue: " + currentHue + " removing hue: " + hue);
       console.log(hue === currentHue);
       let newHue;
-      if ( Number(currentHue) === Number(hue)) {
+      if ( currentHue === hue) {
         newHue = 0;
         key.ariaPressed = 'false';
         oscillators.stopNote(midiNote);
