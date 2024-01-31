@@ -21,7 +21,10 @@ export function KeyBoard(){
         const currentHue = Number(key.style.getPropertyValue('--current-hue'));
         const componentHues = key.style.getPropertyValue('--component-hues');
         
-        key.style.setProperty('--current-hue', (currentHue + hue)/2);
+        // key.style.setProperty('--current-hue', (currentHue + hue)/2);
+
+        // Deciding to just give the most recent press priority in deciding hue
+        key.style.setProperty('--current-hue', hue);
         key.style.setProperty('--component-hues', componentHues + "," + hue);
         console.log("averaging hues " + currentHue + " and " + hue);
       }
@@ -60,9 +63,14 @@ export function KeyBoard(){
         key.style.setProperty('--component-hues', componentHues.join());
 
         // Mix all the hues together one-by-one
-        const newHue = componentHues.reduce((accumulator, hue) => 
-          (accumulator + hue)/2);
-        key.style.setProperty('--current-hue', newHue);
+        // const newHue = componentHues.reduce((accumulator, hue) => 
+          // (accumulator + hue)/2);
+        // key.style.setProperty('--current-hue', newHue);
+
+        // Just decided to choose the most recently pressed hue to get priority
+        // in setting hue (instead of mixing the hues)
+        console.log(componentHues, componentHues[-1]);
+        key.style.setProperty('--current-hue', componentHues[componentHues.length-1]);
       }
     }
 
