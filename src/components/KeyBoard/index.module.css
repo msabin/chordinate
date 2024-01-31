@@ -2,8 +2,17 @@
   display: flex;
   justify-content: center;
   min-width: 20cm;
+  position: relative;
 }
 
 #keyboard:hover * {
   color: black;
+}
+
+#keyboard:hover::before {
+  content: "1: sine 2: triangle 3: square 4: sawtooth";
+  position: absolute;
+  top: -40%;
+  left: 0; /* Adjust as needed */
+  /* transform: translateX(-50%); */
 }
