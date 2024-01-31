@@ -17,6 +17,14 @@ export function Key(props) {
     }
   }
 
+  let letter = " ";
+  const KEYBOARD = ['a', 'w', 's', 'e', 'd', 'f', 
+        't', 'g', 'y', 'h', 'u', 'j', 'k', 'o', 'l', 
+        'p', ';']
+  if ( midiNote >= 60 && midiNote < 60+KEYBOARD.length) {
+    letter = KEYBOARD[midiNote-60].toUpperCase();
+  }
+
   return (
     <div 
       id={midiNote}
@@ -26,6 +34,6 @@ export function Key(props) {
         ${isLeft ? styles.left : null}
         ${isRight ? styles.right : null}
         `}
-      ></div>
+      ><span>{letter}</span></div>
   )
 }

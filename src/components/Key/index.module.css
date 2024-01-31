@@ -8,17 +8,26 @@
 }
 
 .key {
-  flex: 1 0 auto;
+  flex: 1 0 0;
   aspect-ratio: var(--key-width-proportion)/var(--key-height-proportion);
+  color: #777676;
 	background-color: #777676;
   box-shadow: inset -1px -1px 1px 0px rgb(61 61 61);
 	border-color: black;
 	border-width: 1px;
 	border-style: solid;
   border-radius: 0 0 3px 3px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+.key span {
+  font-size: x-small;
 }
 
 .key.black {
+  color: hsl(182deg 100% 47.77%);
   background-color: hsl(182deg 100% 47.77%);
   box-shadow: inset -3px -3px 0 0 rgb(73 165 162);
   border-color: black;
@@ -28,6 +37,11 @@
   transform: 
     scale(var(--black-key-scale-x), var(--black-key-scale-y)) 
     translateX(-50%);
+}
+
+.key.black span {
+  width: 80%;
+  overflow: hidden;
 }
 
 /* Offset black keys on the left of a cluster a litte more left.
@@ -56,6 +70,7 @@ keys and black keys nearly equal. */
 .key[aria-pressed="true"] {
   --current-hue: 0;
   --component-hues: "";
+  color: hsl(var(--current-hue), 100%, 72%);
   background-color: hsl(var(--current-hue), 100%, 72%);
   box-shadow: inset -1px -1px 1px 0px hsl(var(--current-hue), 100%, 25%);
 }

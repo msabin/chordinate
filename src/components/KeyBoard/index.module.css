@@ -3,3 +3,7 @@
   justify-content: center;
   min-width: 20cm;
 }
+
+#keyboard:hover * {
+  color: black;
+}
