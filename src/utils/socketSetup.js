@@ -8,7 +8,6 @@ export function useSocket() {
 
     socketRef.current.on('hue assignment', (hue) => {
       const root = document.documentElement;
-      root.style.setProperty('--pressed-key-hue', hue);
 
       socketRef.current.hue = hue;
     })

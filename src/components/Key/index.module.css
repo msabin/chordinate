@@ -5,7 +5,6 @@
   --black-key-scale-y: .64;
   --black-off-center: 14%;
   --num-white-keys: 52;
-  --pressed-key-hue: 299;
 }
 
 .key {
@@ -55,7 +54,8 @@ keys and black keys nearly equal. */
 }
 
 .key[aria-pressed="true"] {
-  --current-hue: var(--pressed-key-hue);
+  --current-hue: 0;
+  --component-hues: "";
   background-color: hsl(var(--current-hue), 100%, 72%);
   box-shadow: inset -1px -1px 1px 0px hsl(var(--current-hue), 100%, 25%);
 }

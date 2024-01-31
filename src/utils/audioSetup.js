@@ -44,7 +44,7 @@ class Oscillators {
 
     osc.frequency.setValueAtTime(Hz, this.context.currentTime);
     osc.type = waveForm;
-    gain.gain.setValueAtTime(0, this.context.currentTime);
+    gain.gain.setValueAtTime(.00000001, this.context.currentTime);
 
     osc.connect(gain);
     gain.connect(this.vol);

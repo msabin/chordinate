@@ -19,13 +19,16 @@ export function KeyBoard(){
       // If key is already pressed, just mix in the new hue
       if ( key.ariaPressed === 'true') {
         const currentHue = Number(key.style.getPropertyValue('--current-hue'));
+        const componentHues = key.style.getPropertyValue('--component-hues');
         
         key.style.setProperty('--current-hue', (currentHue + hue)/2);
+        key.style.setProperty('--component-hues', componentHues + "," + hue);
         console.log("averaging hues " + currentHue + " and " + hue);
       }
       // Otherwise, set it to the incoming hue and play the key
       else {
         key.style.setProperty('--current-hue', hue);
+        key.style.setProperty('--component-hues', hue);
         key.ariaPressed = 'true';
         console.log("setting hue to " + hue);
         oscillators.playNote(midiNote, velocity);
@@ -36,24 +39,31 @@ export function KeyBoard(){
       const key = document.getElementById(midiNote);
 
       hue = Number(hue);
-      const currentHue =  Number(key.style.getPropertyValue('--current-hue'));
+      const componentHuesString =  key.style.getPropertyValue('--component-hues');
+      const componentHues = componentHuesString.split(',').map(Number);
 
-      console.log("Release - current hue: " + currentHue + " removing hue: " + hue);
-      console.log(hue === currentHue);
-      let newHue;
-      if ( currentHue === hue) {
-        newHue = 0;
+      // If this is the last hue that was pressing the key, we can remove that hue
+      // and release the key.
+      if ( componentHues.length === 1 ) {
+        key.style.setProperty('--current-hue', 0);
+        key.style.setProperty('--component-hues', '');
+
         key.ariaPressed = 'false';
         oscillators.stopNote(midiNote);
 
         console.log("releasing note");
       }
-      else {      
-        newHue = currentHue * 2 - hue;
-        console.log("removing hue " + hue + " from " + currentHue);
-      }
+      // Otherwise, the key is still being held down and we simply adjust its hue.
+      else {
+        // Remove the hue
+        componentHues.splice(componentHues.indexOf(hue), 1);
+        key.style.setProperty('--component-hues', componentHues.join());
 
-      key.style.setProperty('--current-hue', newHue);
+        // Mix all the hues together one-by-one
+        const newHue = componentHues.reduce((accumulator, hue) => 
+          (accumulator + hue)/2);
+        key.style.setProperty('--current-hue', newHue);
+      }
     }
 
     const KEYBOARD = ['a', 'w', 's', 'e', 'd', 'f', 
