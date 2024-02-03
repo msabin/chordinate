@@ -14,7 +14,7 @@ app.get('/', (req, res) => {
   res.sendFile(join(__dirname, 'dist/index.html'));
 });
 
-app.use(express.static(join(__dirname, 'dist')));
+app.use('/chordinate', express.static(join(__dirname, 'dist')));
 
 let numSockets = 0;
 const freeSockets = []
@@ -31,7 +31,16 @@ io.on('connection', (socket) => {
   }
 
   if ( !userHue[socketNum] ){
-    userHue[socketNum] = (299 + 83*(socketNum-1))%360;
+    let newHue = (299 + 83*(socketNum-1))%360;
+
+    // We'll need to put this on the frontend in a less hardcoded way later,
+    // but right now we're just keeping the hue away from the blue color of the
+    // "black" keys so it'll be visible
+    if ( Math.abs(newHue - 182 ) < 40 ) {
+      newHue += 83;
+    }
+
+    userHue[socketNum] = newHue;
   }
 
   socket.emit('hue assignment', userHue[socketNum]);

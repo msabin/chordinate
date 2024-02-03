@@ -7,6 +7,8 @@
 
 #keyboard:hover * {
   color: black;
+  font-size: small;
+  overflow: visible;
 }
 
 #keyboard:hover::before {
