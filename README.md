@@ -1,6 +1,4 @@
-# chordinate
-
-**In Progress**
+# chordinate (In Progress)
 
 <img src="/screencaps/chordinate-demo.png" width="500">
 
