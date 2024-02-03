@@ -2,7 +2,7 @@
 
 **In Progress**
 
-<img src="/screencaps/chordinate-demo.gif" width="500">
+<img src="/screencaps/chordinate-demo.png" width="500">
 
 A communal virtual keyboard as a remote tutoring tool for piano and music theory.
 
