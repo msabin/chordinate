@@ -1,6 +1,7 @@
 # chordinate (In Progress)
 
-<img src="/screencaps/chordinate-demo.png" width="500">
+<img src="/screencaps/chordinate-wide.png" style="width: 100%;" alt="Image of a colorful piano keyboard as some keys are highlighted different colors.">
+
 
 A communal virtual keyboard as a remote tutoring tool for piano and music theory.
 
