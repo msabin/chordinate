@@ -1,11 +1,16 @@
 import express from 'express';
-import { createServer } from 'node:http';
+import { createServer } from 'node:https';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { Server } from 'socket.io';
 
 const app = express();
-const server = createServer(app);
+const serverOptions = {
+  key: readFileSync('/etc/letsencrypt/live/heybug.tech/privkey.pem'),
+  cert: readFileSync('/etc/letsencrypt/live/heybug.tech/fullchain.pem'),
+};
+const server = createServer(serverOptions, app);
 const io = new Server(server);
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -65,6 +70,6 @@ io.on('connection', (socket) => {
 });
 
 // Turn on Node.js's event loop for the server to listen for requests
-server.listen(3000, () => {
-  console.log('server running at http://localhost:3000');
+server.listen(443, () => {
+  console.log('Server is running on port 443 (HTTPS)');
 });
