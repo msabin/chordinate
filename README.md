@@ -5,7 +5,7 @@
 
 A communal virtual keyboard as a remote tutoring tool for piano and music theory.
 
-**Play with the app [here](https://berry-shine-nightingale.glitch.me/)!!**
+**Play with the app [here](https://heybug.tech/chordinate)!!**
 
 Use your computer keyboard a MIDI keyboard to play this virtual piano and anyone else on the link will see and hear what you play and can play back!
 
